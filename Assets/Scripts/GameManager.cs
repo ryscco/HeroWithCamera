@@ -2,18 +2,17 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : MonoBehaviour
+{
     public static GameManager sTheGlobalBehavior = null;
-
     public Text mGameStateEcho = null;  // Defined in UnityEngine.UI
     public HeroBehavior mHero = null;
     public WayPointSystem mWayPoints = null;
     private EnemySpawnSystem mEnemySystem = null;
-
     private CameraSupport mMainCamera;
-    
-    // Use this for initialization
-    void Start () {
+    public Camera mWaypointCamera, mEnemyCamera, mHeroCamera;
+    void Start()
+    {
         GameManager.sTheGlobalBehavior = this;  // Singleton pattern
 
         // This must occur before EnemySystem's Start();
@@ -30,23 +29,28 @@ public class GameManager : MonoBehaviour {
         EnemyBehavior.InitializeEnemySystem(mEnemySystem, mWayPoints);
         mEnemySystem.GenerateEnemy();  // Can only create enemies when WayPoint is initialized in EnemyBehavior
     }
-    
-	void Update () {
+    void Update()
+    {
         EchoGameState(); // always do this
-
         if (Input.GetKey(KeyCode.Q))
             Application.Quit();
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            toggleCamera(mWaypointCamera);
+            toggleCamera(mEnemyCamera);
+            toggleCamera(mHeroCamera);
+        }
     }
-
-
     #region Bound Support
     public CameraSupport.WorldBoundStatus CollideWorldBound(Bounds b) { return mMainCamera.CollideWorldBound(b); }
     #endregion 
-
     private void EchoGameState()
     {
-        mGameStateEcho.text =  mWayPoints.GetWayPointState() + "  " + 
-                               mHero.GetHeroState() + "  " + 
-                               mEnemySystem.GetEnemyState();
+        mGameStateEcho.text = mWayPoints.GetWayPointState() + "  " + mHero.GetHeroState() + "  " + mEnemySystem.GetEnemyState();
+    }
+    void toggleCamera(Camera cam) // Toggle culling mask to "inactivate" a camera's rendering
+    {
+        cam.gameObject.SetActive(!(cam.gameObject.activeSelf));
     }
 }
