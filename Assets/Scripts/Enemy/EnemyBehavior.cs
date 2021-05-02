@@ -3,7 +3,7 @@ using System.Collections;
 
 public partial class EnemyBehavior : MonoBehaviour
 {
-    enum EnemyState
+    public enum EnemyState
     {
         Patrol,
         RotateCCW,
@@ -14,6 +14,13 @@ public partial class EnemyBehavior : MonoBehaviour
         Stunned,
         Egg
     }
+
+    public EnemyState myState = EnemyState.Patrol;
+    private float stateTimer; // For keeping track of a state's starting time
+    private GameObject currentTarget; // For chasing
+
+    Vector3 originalScale;
+    float currentScaleRatio = 1;
 
     // All instances of Enemy shares this one WayPoint and EnemySystem
     static private WayPointSystem sWayPoints = null;
@@ -27,10 +34,6 @@ public partial class EnemyBehavior : MonoBehaviour
     private int mNumHit = 0;
     private const int kHitsToDestroy = 4;
     private const float kEnemyEnergyLost = 0.8f;
-
-    private EnemyState myState = EnemyState.Patrol;
-    private float stateTimer; // For keeping track of a state's starting time
-    private GameObject currentTarget; // For chasing
 
     // Use this for initialization
     void Start()
@@ -50,7 +53,7 @@ public partial class EnemyBehavior : MonoBehaviour
     {
         transform.Rotate(0, 0, rate * Time.deltaTime);
 
-        if (timeHasElapsed(1f))
+        if (timeHasElapsed(1)) // If at least 1 second has elapsed:
         {
             if (rate > 0) // is CCW
             {
@@ -65,12 +68,57 @@ public partial class EnemyBehavior : MonoBehaviour
         }
     }
 
+    // Returns true if the currentTarget is within the specified distance:
+    bool targetIsWithin(float radius)
+    {
+        float distance = Vector3.Distance(transform.position, currentTarget.transform.position);
+        return distance <= radius;
+    }
+
     // For chasing the hero:
     void UpdateChase()
     {
+        if (targetIsWithin(40))
+        {
+            // Lock onto the target instantly and chase:
+            PointAtPosition(currentTarget.transform.position, 100);
+            transform.position += (kSpeed * Time.smoothDeltaTime) * transform.up;
+        }
+        else
+        {
+            enterScalingStates(); // Begin enlarging then shrinking
+        }
+    }
 
-        PointAtPosition(currentTarget.transform.position, kTurnRate);
-        transform.position += (kSpeed * Time.smoothDeltaTime) * transform.up;
+    void enterScalingStates()
+    {
+        currentScaleRatio = 1;
+        originalScale = transform.localScale;
+        myState = EnemyState.Enlarge;
+        resetTimer();
+    }
+
+    void UpdateScale(float rate)
+    {
+        currentScaleRatio += rate * Time.deltaTime;
+        transform.localScale = originalScale * currentScaleRatio;
+
+        if (timeHasElapsed(1)) // If at least 1 second has elapsed:
+        {
+            if (rate > 0) // is enlarging
+            {
+                transform.localScale = originalScale * (rate + 1);
+                myState = EnemyState.Shrink; // switch to shrinking
+            }
+            else // is shrinking
+            {
+                transform.localScale = originalScale;
+                GetComponent<Renderer>().material.color = Color.white;
+                myState = EnemyState.Patrol; // return to normal operation
+            }
+
+            resetTimer();
+        }
     }
 
     // Update is called once per frame
@@ -95,10 +143,12 @@ public partial class EnemyBehavior : MonoBehaviour
                 }
             case EnemyState.Enlarge:
                 {
+                    UpdateScale(1);
                     break;
                 }
             case EnemyState.Shrink:
                 {
+                    UpdateScale(-1);
                     break;
                 }
             case EnemyState.Stunned:
@@ -135,8 +185,6 @@ public partial class EnemyBehavior : MonoBehaviour
     {
         if (g.name == "Hero")
         {
-            //ThisEnemyIsHit();
-
             if (myState == EnemyState.Patrol)
             {
                 currentTarget = g;
