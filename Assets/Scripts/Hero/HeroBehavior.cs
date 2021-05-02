@@ -5,6 +5,7 @@ using System.Collections;
 public class HeroBehavior : MonoBehaviour {
     
     public EggSpawnSystem mEggSystem = null;
+    public EnemyBehavior touchedChaser = null;
     private const float kHeroRotateSpeed = 90f/2f; // 90-degrees in 2 seconds
     private const float kHeroSpeed = 20f;  // 20-units in a second
     private float mHeroSpeed = kHeroSpeed;
@@ -12,11 +13,23 @@ public class HeroBehavior : MonoBehaviour {
     private bool mMouseDrive = true;
     //  Hero state
     private int mHeroTouchedEnemy = 0;
-    private void TouchedEnemy() { mHeroTouchedEnemy++; }
-    public string GetHeroState() { return "HERO: Drive(" + (mMouseDrive?"Mouse":"Key") + 
-                                          ") TouchedEnemy(" + mHeroTouchedEnemy + ")   " 
-                                            + mEggSystem.EggSystemStatus(); }
+    private void TouchedEnemy()
+    {
+        /*
+         
+         NEED TO IMPLEMENT IF HIT BY ENEMY IN CHASE MODE,
+         IN ENEMY BEHAVIOR NEED TO IMPLEMENT RETURN BOOL 
+         IF HITS PLAYER WHILE IN CHASE MODE
 
+         */     
+        mHeroTouchedEnemy++;
+    }
+    public string GetHeroState()
+    {
+        return "HERO: Drive(" + (mMouseDrive ? "Mouse" : "Key") + (
+               ") Hit(" + mHeroTouchedEnemy) + ") "
+               + mEggSystem.EggSystemStatus();
+    }
     private void Awake()
     {
         // Actually since Hero spwans eggs, this can be done in the Start() function, but, 

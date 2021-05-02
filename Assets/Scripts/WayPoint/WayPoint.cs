@@ -9,7 +9,11 @@ public class WayPoint : MonoBehaviour
     private const int kHitLimit = 3;
     private const float kRepositionRange = 15f; // +- this value
     private Color mNormalColor = Color.white;
-    
+
+
+    SpriteRenderer Wp;
+    private float alphaC = 0.25f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,21 +28,58 @@ public class WayPoint : MonoBehaviour
                          Random.Range(-kRepositionRange, kRepositionRange),
                          0f);
         transform.position = p;
-        GetComponent<SpriteRenderer>().color = mNormalColor;
+        alphaC = 1.0f;
+        Wp.color = new Color(1.0f, 1.0f, 1.0f, alphaC);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.name == "Egg(Clone)")
         {
+
+            Wp = GetComponent<SpriteRenderer>();
+            Wp.color = new Color(1.0f, 1.0f, 1.0f, alphaC);
             mHitCount++;
-            Color c = mNormalColor * (float)(kHitLimit - mHitCount + 1) / (float)(kHitLimit + 1);
-            GetComponent<SpriteRenderer>().color = c;
-            if (mHitCount > kHitLimit)
+            if (mHitCount == 1)
             {
+                StartCoroutine(Shake(1, 1));
+            }
+            else if (mHitCount == 2)
+            {
+                StartCoroutine(Shake(2, 2));
+            }
+            else if (mHitCount == 3)
+            {
+                StartCoroutine(Shake(3, 3));
+            }
+            else if (mHitCount == 4)
+            {
+                
+                if (mHitCount > kHitLimit)
+                {
+                    Reposition();
+                }
                 mHitCount = 0;
-                Reposition();
             }
         }
+    }
+
+    IEnumerator Shake(float dur, float mag)
+    {
+        Vector3 orig = transform.position;
+
+        float elapseT = 0.0f;
+
+        while(elapseT < dur)
+        {
+            float x = Random.Range(-1f, 1f) * mag;
+            float y = Random.Range(-1f, 1f) * mag;
+
+            transform.localPosition = new Vector3(x, y, orig.z);
+            elapseT += Time.smoothDeltaTime;
+            yield return null;
+        }
+        transform.localPosition = orig;
+
     }
 }

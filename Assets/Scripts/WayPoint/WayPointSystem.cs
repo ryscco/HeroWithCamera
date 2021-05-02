@@ -77,5 +77,5 @@ public class WayPointSystem : MonoBehaviour
         return mWayPoints[index].transform.position;
     }
 
-    public string GetWayPointState() { return "  WAYPOINTS:(" + (WayPointInSequence() ? "Sequence" : "Random") + ")"; }
+    public string GetWayPointState() { return "WAYPOINTS:(" + (WayPointInSequence() ? "Sequence" : "Random") + ")"; }
 }

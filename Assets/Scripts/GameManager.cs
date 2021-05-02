@@ -6,6 +6,9 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager sTheGlobalBehavior = null;
     public Text mGameStateEcho = null;  // Defined in UnityEngine.UI
+    public Text WaypointText = null;
+    public Text HeroText = null;
+    public Text EnemyText = null;
     public HeroBehavior mHero = null;
     public WayPointSystem mWayPoints = null;
     private EnemySpawnSystem mEnemySystem = null;
@@ -47,7 +50,9 @@ public class GameManager : MonoBehaviour
     #endregion 
     private void EchoGameState()
     {
-        mGameStateEcho.text = mWayPoints.GetWayPointState() + "  " + mHero.GetHeroState() + "  " + mEnemySystem.GetEnemyState();
+        WaypointText.text = mWayPoints.GetWayPointState();
+        HeroText.text = mHero.GetHeroState();
+        EnemyText.text = mEnemySystem.GetEnemyState();
     }
     void toggleCamera(Camera cam) // Toggle culling mask to "inactivate" a camera's rendering
     {

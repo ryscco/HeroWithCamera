@@ -7,6 +7,7 @@ public class EnemySpawnSystem
 {
     private const int kMaxEnemy = 10;
 
+    private int mCurrEnemy = 0;
     private int mTotalEnemy = 0;
     private GameObject mEnemyTemplate = null;
     private Vector2 mSpawnRegionMin, mSpawnRegionMax;
@@ -23,17 +24,18 @@ public class EnemySpawnSystem
 
     public void GenerateEnemy()
     {
-        for (int i = mTotalEnemy; i < kMaxEnemy; i++)
+        for (int i = mCurrEnemy; i < kMaxEnemy; i++)
         {
             GameObject p = GameObject.Instantiate(mEnemyTemplate) as GameObject;
             float x = Random.Range(mSpawnRegionMin.x, mSpawnRegionMax.x);
             float y = Random.Range(mSpawnRegionMin.y, mSpawnRegionMax.y);
             p.transform.position = new Vector3(x, y, 0f);
             mTotalEnemy++;
+            mCurrEnemy++;
         }
     }
 
     public void OneEnemyDestroyed() { mEnemyDestroyed++;  ReplaceOneEnemy(); }
-    public void ReplaceOneEnemy() { mTotalEnemy--; GenerateEnemy(); }
-    public string GetEnemyState() { return "  ENEMY: Count(" + mTotalEnemy + ") Destroyed(" + mEnemyDestroyed + ")"; }
+    public void ReplaceOneEnemy() { mCurrEnemy--; GenerateEnemy(); }
+    public string GetEnemyState() { return "ENEMY: Count(" + mCurrEnemy + ") Destroyed(" + mEnemyDestroyed + ") Total("  + mTotalEnemy + ")" ; }
 }
