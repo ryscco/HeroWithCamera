@@ -3,6 +3,8 @@ using System.Collections;
 
 public partial class EnemyBehavior : MonoBehaviour
 {
+    public Sprite initialTexture, stunnedTexture, eggTexture;
+
     public enum EnemyState
     {
         Patrol,
@@ -15,12 +17,19 @@ public partial class EnemyBehavior : MonoBehaviour
         Egg
     }
 
-    public EnemyState myState = EnemyState.Patrol;
+    public EnemyState myState = EnemyState.Patrol; // Current enemy state
     private float stateTimer; // For keeping track of a state's starting time
-    private GameObject currentTarget; // For chasing
+    private GameObject currentTarget; // For chasing the hero
 
-    Vector3 originalScale;
-    float currentScaleRatio = 1;
+    // Variables to assist with lerp motion upon collision from an egg:
+    public bool isPushed = false;
+    private Vector3 startingPosition;
+    private Vector3 restingPosition;
+
+    // Variables to help with scaling the object's size:
+    private Vector3 originalScale;
+    private float currentScaleRatio = 1;
+    private float maximumEnlargedRatio = 2;
 
     // All instances of Enemy shares this one WayPoint and EnemySystem
     static private WayPointSystem sWayPoints = null;
@@ -31,13 +40,11 @@ public partial class EnemyBehavior : MonoBehaviour
     private int mWayPointIndex = 0;
 
     private const float kTurnRate = 0.03f / 60f;
-    private int mNumHit = 0;
-    private const int kHitsToDestroy = 4;
-    private const float kEnemyEnergyLost = 0.8f;
 
     // Use this for initialization
     void Start()
     {
+        originalScale = transform.localScale;
         mWayPointIndex = sWayPoints.GetInitWayIndex();
     }
 
@@ -86,38 +93,64 @@ public partial class EnemyBehavior : MonoBehaviour
         }
         else
         {
-            enterScalingStates(); // Begin enlarging then shrinking
+            currentScaleRatio = 1;
+            myState = EnemyState.Enlarge;
+            resetTimer();
         }
-    }
-
-    void enterScalingStates()
-    {
-        currentScaleRatio = 1;
-        originalScale = transform.localScale;
-        myState = EnemyState.Enlarge;
-        resetTimer();
     }
 
     void UpdateScale(float rate)
     {
-        currentScaleRatio += rate * Time.deltaTime;
-        transform.localScale = originalScale * currentScaleRatio;
-
         if (timeHasElapsed(1)) // If at least 1 second has elapsed:
         {
             if (rate > 0) // is enlarging
             {
-                transform.localScale = originalScale * (rate + 1);
+                currentScaleRatio = maximumEnlargedRatio;
                 myState = EnemyState.Shrink; // switch to shrinking
             }
             else // is shrinking
             {
-                transform.localScale = originalScale;
+                currentScaleRatio = 1; // Original size
                 GetComponent<Renderer>().material.color = Color.white;
                 myState = EnemyState.Patrol; // return to normal operation
             }
 
             resetTimer();
+        }
+        else
+        {
+            currentScaleRatio += rate * Time.deltaTime;
+        }
+
+        transform.localScale = originalScale * currentScaleRatio;
+    }
+
+    void pushBy(float numberOfUnits, GameObject orientation)
+    {
+        isPushed = true;
+        startingPosition = transform.position;
+        restingPosition = orientation.transform.up * numberOfUnits + startingPosition;
+        resetTimer();
+    }
+
+    void UpdateLerpPosition()
+    {
+        if (isPushed)
+        {
+            float elapsedTime = Time.time - stateTimer;
+
+            if (elapsedTime < 2)
+            {
+                // My lerp ratio is a function of elapsed time in the form of a parabola,
+                // such that the object slows down to a halt upon reaching 2 seconds:
+                float lerpRatio = elapsedTime * (4f - elapsedTime) / 4f;
+                transform.position = Vector3.Lerp(startingPosition, restingPosition, lerpRatio);
+            }
+            else
+            {
+                transform.position = restingPosition;
+                isPushed = false;
+            }
         }
     }
 
@@ -143,20 +176,23 @@ public partial class EnemyBehavior : MonoBehaviour
                 }
             case EnemyState.Enlarge:
                 {
-                    UpdateScale(1);
+                    UpdateScale(maximumEnlargedRatio - 1);
                     break;
                 }
             case EnemyState.Shrink:
                 {
-                    UpdateScale(-1);
+                    UpdateScale(1 - maximumEnlargedRatio);
                     break;
                 }
             case EnemyState.Stunned:
                 {
+                    transform.Rotate(0, 0, 90f * Time.deltaTime);
+                    UpdateLerpPosition();
                     break;
                 }
             case EnemyState.Egg:
                 {
+                    UpdateLerpPosition();
                     break;
                 }
             default: // Patrol state:
@@ -193,16 +229,24 @@ public partial class EnemyBehavior : MonoBehaviour
         }
         else if (g.name == "Egg(Clone)")
         {
-            mNumHit++;
-            if (mNumHit < kHitsToDestroy)
+            if (myState == EnemyState.Egg)
             {
-                Color c = GetComponent<Renderer>().material.color;
-                c.a = c.a * kEnemyEnergyLost;
-                GetComponent<Renderer>().material.color = c;
+                ThisEnemyIsHit();
+            }
+            else if (myState == EnemyState.Stunned)
+            {
+                pushBy(8, g);
+                gameObject.GetComponent<SpriteRenderer>().sprite = eggTexture;
+                myState = EnemyState.Egg;
             }
             else
             {
-                ThisEnemyIsHit();
+                pushBy(4, g);
+                currentScaleRatio = 1;
+                transform.localScale = originalScale;
+                GetComponent<Renderer>().material.color = Color.white;
+                gameObject.GetComponent<SpriteRenderer>().sprite = stunnedTexture;
+                myState = EnemyState.Stunned;
             }
         }
     }
