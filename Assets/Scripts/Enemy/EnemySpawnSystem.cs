@@ -17,8 +17,8 @@ public class EnemySpawnSystem
     public EnemySpawnSystem(Vector2 min, Vector2 max)
     {
         mEnemyTemplate = Resources.Load<GameObject>("Prefabs/Enemy") as GameObject;
-        mSpawnRegionMin = min;
-        mSpawnRegionMax = max;
+        mSpawnRegionMin = min * 0.9f;
+        mSpawnRegionMax = max * 0.9f;
         // GenerateEnemy(); Cannot call from here as WayPoint system is not initialized in EnemyBehavior!
     }
 
