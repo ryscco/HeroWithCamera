@@ -13,17 +13,12 @@ public class HeroBehavior : MonoBehaviour {
     private bool mMouseDrive = true;
     //  Hero state
     private int mHeroTouchedEnemy = 0;
-    private void TouchedEnemy()
-    {
-        /*
-         
-         NEED TO IMPLEMENT IF HIT BY ENEMY IN CHASE MODE,
-         IN ENEMY BEHAVIOR NEED TO IMPLEMENT RETURN BOOL 
-         IF HITS PLAYER WHILE IN CHASE MODE
 
-         */     
+    public void TouchedEnemy()
+    { 
         mHeroTouchedEnemy++;
     }
+
     public string GetHeroState()
     {
         return "HERO: Drive(" + (mMouseDrive ? "Mouse" : "Key") + (
@@ -79,10 +74,7 @@ public class HeroBehavior : MonoBehaviour {
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        Debug.Log("Hero touched");
-        if (collision.gameObject.name == "Enemy(Clone)")
-            TouchedEnemy();
-    }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //}
 }

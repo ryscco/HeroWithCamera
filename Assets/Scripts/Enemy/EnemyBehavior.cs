@@ -14,7 +14,8 @@ public partial class EnemyBehavior : MonoBehaviour
         Enlarge,
         Shrink,
         Stunned,
-        Egg
+        Egg,
+        Disabled
     }
 
     public EnemyState myState = EnemyState.Patrol; // Current enemy state
@@ -82,20 +83,41 @@ public partial class EnemyBehavior : MonoBehaviour
         return distance <= radius;
     }
 
+    bool isTouchingTarget()
+    {
+        Collider2D localCollider = gameObject.GetComponent<Collider2D>();
+        Collider2D targetCollider = currentTarget.GetComponent<Collider2D>();
+
+        return localCollider.IsTouching(targetCollider);
+    }
+
     // For chasing the hero:
     void UpdateChase()
     {
-        if (targetIsWithin(40))
+        if (isTouchingTarget())
         {
-            // Lock onto the target instantly and chase:
-            PointAtPosition(currentTarget.transform.position, 100);
-            transform.position += (kSpeed * Time.smoothDeltaTime) * transform.up;
+            if (currentTarget.name == "Hero")
+            {
+                HeroBehavior player = currentTarget.GetComponent<HeroBehavior>();
+                player.TouchedEnemy();
+            }
+
+            ThisEnemyIsHit();
         }
         else
         {
-            currentScaleRatio = 1;
-            myState = EnemyState.Enlarge;
-            resetTimer();
+            if (targetIsWithin(40))
+            {
+                // Lock onto the target instantly and chase:
+                PointAtPosition(currentTarget.transform.position, 100);
+                transform.position += (kSpeed * Time.smoothDeltaTime) * transform.up;
+            }
+            else
+            {
+                currentScaleRatio = 1;
+                myState = EnemyState.Enlarge;
+                resetTimer();
+            }
         }
     }
 
@@ -159,6 +181,13 @@ public partial class EnemyBehavior : MonoBehaviour
     {
         switch (myState)
         {
+            case EnemyState.Patrol:
+                {
+                    sWayPoints.CheckNextWayPoint(transform.position, ref mWayPointIndex);
+                    PointAtPosition(sWayPoints.WayPoint(mWayPointIndex), kTurnRate);
+                    transform.position += (kSpeed * Time.smoothDeltaTime) * transform.up;
+                    break;
+                }
             case EnemyState.RotateCCW:
                 {
                     UpdateRotation(90f);
@@ -195,13 +224,7 @@ public partial class EnemyBehavior : MonoBehaviour
                     UpdateLerpPosition();
                     break;
                 }
-            default: // Patrol state:
-                {
-                    sWayPoints.CheckNextWayPoint(transform.position, ref mWayPointIndex);
-                    PointAtPosition(sWayPoints.WayPoint(mWayPointIndex), kTurnRate);
-                    transform.position += (kSpeed * Time.smoothDeltaTime) * transform.up;
-                    break;
-                }
+            // Disabled state does nothing, therefore no default case necessary.
         }
     }
 
