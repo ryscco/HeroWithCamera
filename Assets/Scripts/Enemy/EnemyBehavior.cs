@@ -182,49 +182,49 @@ public partial class EnemyBehavior : MonoBehaviour
         switch (myState)
         {
             case EnemyState.Patrol:
-                {
-                    sWayPoints.CheckNextWayPoint(transform.position, ref mWayPointIndex);
-                    PointAtPosition(sWayPoints.WayPoint(mWayPointIndex), kTurnRate);
-                    transform.position += (kSpeed * Time.smoothDeltaTime) * transform.up;
-                    break;
-                }
+            {
+                sWayPoints.CheckNextWayPoint(transform.position, ref mWayPointIndex);
+                PointAtPosition(sWayPoints.WayPoint(mWayPointIndex), kTurnRate);
+                transform.position += (kSpeed * Time.smoothDeltaTime) * transform.up;
+                break;
+            }
             case EnemyState.RotateCCW:
-                {
-                    UpdateRotation(90f);
-                    break;
-                }
+            {
+                UpdateRotation(90f);
+                break;
+            }
             case EnemyState.RotateCW:
-                {
-                    UpdateRotation(-90f);
-                    break;
-                }
+            {
+                UpdateRotation(-90f);
+                break;
+            }
             case EnemyState.Chase:
-                {
-                    UpdateChase();
-                    break;
-                }
+            {
+                UpdateChase();
+                break;
+            }
             case EnemyState.Enlarge:
-                {
-                    UpdateScale(maximumEnlargedRatio - 1);
-                    break;
-                }
+            {
+                UpdateScale(maximumEnlargedRatio - 1);
+                break;
+            }
             case EnemyState.Shrink:
-                {
-                    UpdateScale(1 - maximumEnlargedRatio);
-                    break;
-                }
+            {
+                UpdateScale(1 - maximumEnlargedRatio);
+                break;
+            }
             case EnemyState.Stunned:
-                {
-                    transform.Rotate(0, 0, 90f * Time.deltaTime);
-                    UpdateLerpPosition();
-                    break;
-                }
+            {
+                transform.Rotate(0, 0, 90f * Time.deltaTime);
+                UpdateLerpPosition();
+                break;
+            }
             case EnemyState.Egg:
-                {
-                    UpdateLerpPosition();
-                    break;
-                }
-            // Disabled state does nothing, therefore no default case necessary.
+            {
+                UpdateLerpPosition();
+                break;
+            }
+            // Disabled state does nothing, therefore a default case is not necessary.
         }
     }
 
@@ -276,8 +276,14 @@ public partial class EnemyBehavior : MonoBehaviour
 
     private void ThisEnemyIsHit()
     {
-        sEnemySystem.OneEnemyDestroyed();
-        Destroy(gameObject);
+        // Disabled state prevents the enemies-destroyed count from
+        // being incremented multiple times for the same enemy.
+        if (myState != EnemyState.Disabled)
+        {
+            myState = EnemyState.Disabled;
+            sEnemySystem.OneEnemyDestroyed();
+            Destroy(gameObject);
+        }
     }
 
     private void resetTimer()
