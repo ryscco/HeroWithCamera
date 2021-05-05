@@ -17,7 +17,7 @@ public class WayPoint : MonoBehaviour
     public float dur = 0f;
 
     SpriteRenderer Wp;
-    private float alphaC = 0.25f;
+    private float alphaC = 1f;
 
     // Start is called before the first frame update
     void Start()
@@ -40,30 +40,29 @@ public class WayPoint : MonoBehaviour
     {
         if (collision.gameObject.name == "Egg(Clone)")
         {
+            mHitCount++;
+
+            StopCoroutine("Shake");
+
+            if (mHitCount > kHitLimit)
+            {
+                Reposition();
+                mHitCount = 0;
+            }
+            else
+            {
+                StartCoroutine(Shake(mHitCount, mHitCount));
+            }
+
+            alphaC = 1f - (mHitCount / 4f);
+
+            if (alphaC < 0)
+            {
+                alphaC = 0;
+            }
 
             Wp = GetComponent<SpriteRenderer>();
             Wp.color = new Color(1.0f, 1.0f, 1.0f, alphaC);
-            mHitCount++;
-            if (mHitCount == 1)
-            {
-                StartCoroutine(Shake(1, 1));
-            }
-            else if (mHitCount == 2)
-            {
-                StartCoroutine(Shake(2, 2));
-            }
-            else if (mHitCount == 3)
-            {
-                StartCoroutine(Shake(3, 3));
-            }
-            else if (mHitCount == 4)
-            {
-                if (mHitCount > kHitLimit)
-                {
-                    Reposition();
-                }
-                mHitCount = 0;
-            }
         }
     }
 
@@ -84,7 +83,7 @@ public class WayPoint : MonoBehaviour
         float elapseT = 0.0f;
         dur = dur / 2;
 
-        while (elapseT < dur)
+        while (elapseT < dur && mag == mHitCount)
         {
             float x = orig.x + (Random.Range(0f, 1f) * mag);
             float y = orig.y + (Random.Range(0f, 1f) * mag);
@@ -93,9 +92,13 @@ public class WayPoint : MonoBehaviour
             elapseT += Time.smoothDeltaTime;
             yield return null;
         }
-        transform.position = orig;
-        // Return WayPointCam to its original position and turn it off
-        wpCam.gameObject.transform.localPosition = wpCamOrigPos;
-        wpCam.gameObject.SetActive(false);
+
+        if (mag == mHitCount)
+        {
+            transform.position = orig;
+            // Return WayPointCam to its original position and turn it off
+            wpCam.gameObject.transform.localPosition = wpCamOrigPos;
+            wpCam.gameObject.SetActive(false);
+        }
     }
 }
