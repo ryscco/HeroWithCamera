@@ -3,7 +3,6 @@ using System.Collections;
 
 public partial class EnemyBehavior : MonoBehaviour
 {
-    public Camera enemyCam;
     public Sprite initialTexture, stunnedTexture, eggTexture;
 
     public enum EnemyState
@@ -46,7 +45,6 @@ public partial class EnemyBehavior : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        enemyCam = GameObject.Find("Enemy Cam").GetComponent<Camera>();
         originalScale = transform.localScale;
         mWayPointIndex = sWayPoints.GetInitWayIndex();
     }
@@ -96,10 +94,6 @@ public partial class EnemyBehavior : MonoBehaviour
     // For chasing the hero:
     void UpdateChase()
     {
-        Vector2 camPos = transform.localPosition - currentTarget.gameObject.transform.localPosition;
-        Debug.Log("Enemy Loc: " + transform.localPosition);
-        Debug.Log("Player Loc: " + currentTarget.gameObject.transform.localPosition);
-        Debug.Log("Cam Pos: " + camPos);
         if (isTouchingTarget())
         {
             if (currentTarget.name == "Hero")
