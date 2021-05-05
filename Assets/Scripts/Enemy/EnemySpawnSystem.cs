@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class EnemySpawnSystem
 {
     private const int kMaxEnemy = 10;
-
     private int mCurrEnemy = 0;
     private int mTotalEnemy = 0;
     private GameObject mEnemyTemplate = null;
@@ -35,7 +34,7 @@ public class EnemySpawnSystem
         }
     }
 
-    public void OneEnemyDestroyed() { mEnemyDestroyed++;  ReplaceOneEnemy(); }
+    public void OneEnemyDestroyed() { mEnemyDestroyed++; ReplaceOneEnemy(); }
     public void ReplaceOneEnemy() { mCurrEnemy--; GenerateEnemy(); }
-    public string GetEnemyState() { return "ENEMY: Count(" + mCurrEnemy + ") Destroyed(" + mEnemyDestroyed + ") Total("  + mTotalEnemy + ")" ; }
+    public string GetEnemyState() { return "ENEMY: Count(" + mCurrEnemy + ") Destroyed(" + mEnemyDestroyed + ") Total(" + mTotalEnemy + ")"; }
 }

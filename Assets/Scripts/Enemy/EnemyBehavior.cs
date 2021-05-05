@@ -1,10 +1,10 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public partial class EnemyBehavior : MonoBehaviour
+public class EnemyBehavior : MonoBehaviour
 {
     public Sprite initialTexture, stunnedTexture, eggTexture;
-
     public enum EnemyState
     {
         Patrol,
@@ -17,38 +17,30 @@ public partial class EnemyBehavior : MonoBehaviour
         Egg,
         Disabled
     }
-
     public EnemyState myState = EnemyState.Patrol; // Current enemy state
     private float stateTimer; // For keeping track of a state's starting time
     private GameObject currentTarget; // For chasing the hero
-
     // Variables to assist with lerp motion upon collision from an egg:
     public bool isPushed = false;
     private Vector3 startingPosition;
     private Vector3 restingPosition;
-
     // Variables to help with scaling the object's size:
     private Vector3 originalScale;
     private float currentScaleRatio = 1;
     private float maximumEnlargedRatio = 2;
-
     // All instances of Enemy shares this one WayPoint and EnemySystem
     static private WayPointSystem sWayPoints = null;
     static private EnemySpawnSystem sEnemySystem = null;
     static public void InitializeEnemySystem(EnemySpawnSystem s, WayPointSystem w) { sEnemySystem = s; sWayPoints = w; }
-
     private const float kSpeed = 5f;
     private int mWayPointIndex = 0;
-
     private const float kTurnRate = 0.03f / 60f;
-
     // Use this for initialization
     void Start()
     {
         originalScale = transform.localScale;
         mWayPointIndex = sWayPoints.GetInitWayIndex();
     }
-
     private void enterRotation()
     {
         myState = EnemyState.RotateCCW;
@@ -182,49 +174,49 @@ public partial class EnemyBehavior : MonoBehaviour
         switch (myState)
         {
             case EnemyState.Patrol:
-            {
-                sWayPoints.CheckNextWayPoint(transform.position, ref mWayPointIndex);
-                PointAtPosition(sWayPoints.WayPoint(mWayPointIndex), kTurnRate);
-                transform.position += (kSpeed * Time.smoothDeltaTime) * transform.up;
-                break;
-            }
+                {
+                    sWayPoints.CheckNextWayPoint(transform.position, ref mWayPointIndex);
+                    PointAtPosition(sWayPoints.WayPoint(mWayPointIndex), kTurnRate);
+                    transform.position += (kSpeed * Time.smoothDeltaTime) * transform.up;
+                    break;
+                }
             case EnemyState.RotateCCW:
-            {
-                UpdateRotation(90f);
-                break;
-            }
+                {
+                    UpdateRotation(90f);
+                    break;
+                }
             case EnemyState.RotateCW:
-            {
-                UpdateRotation(-90f);
-                break;
-            }
+                {
+                    UpdateRotation(-90f);
+                    break;
+                }
             case EnemyState.Chase:
-            {
-                UpdateChase();
-                break;
-            }
+                {
+                    UpdateChase();
+                    break;
+                }
             case EnemyState.Enlarge:
-            {
-                UpdateScale(maximumEnlargedRatio - 1);
-                break;
-            }
+                {
+                    UpdateScale(maximumEnlargedRatio - 1);
+                    break;
+                }
             case EnemyState.Shrink:
-            {
-                UpdateScale(1 - maximumEnlargedRatio);
-                break;
-            }
+                {
+                    UpdateScale(1 - maximumEnlargedRatio);
+                    break;
+                }
             case EnemyState.Stunned:
-            {
-                transform.Rotate(0, 0, 90f * Time.deltaTime);
-                UpdateLerpPosition();
-                break;
-            }
+                {
+                    transform.Rotate(0, 0, 90f * Time.deltaTime);
+                    UpdateLerpPosition();
+                    break;
+                }
             case EnemyState.Egg:
-            {
-                UpdateLerpPosition();
-                break;
-            }
-            // Disabled state does nothing, therefore a default case is not necessary.
+                {
+                    UpdateLerpPosition();
+                    break;
+                }
+                // Disabled state does nothing, therefore a default case is not necessary.
         }
     }
 

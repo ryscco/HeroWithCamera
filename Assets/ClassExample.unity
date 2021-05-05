@@ -133,7 +133,6 @@ GameObject:
   m_Component:
   - component: {fileID: 41294128}
   - component: {fileID: 41294127}
-  - component: {fileID: 41294126}
   - component: {fileID: 41294125}
   m_Layer: 0
   m_Name: Enemy Cam
@@ -154,14 +153,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 040030de3617690479d78296c2f7fdf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!81 &41294126
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 41294124}
-  m_Enabled: 1
 --- !u!20 &41294127
 Camera:
   m_ObjectHideFlags: 0
@@ -367,7 +358,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 499503346}
   m_PlaneDistance: 100
   m_PixelPerfect: 1
   m_ReceivesEvents: 1
@@ -413,7 +404,6 @@ GameObject:
   m_Component:
   - component: {fileID: 141023270}
   - component: {fileID: 141023269}
-  - component: {fileID: 141023268}
   - component: {fileID: 141023267}
   m_Layer: 0
   m_Name: Hero Cam
@@ -434,14 +424,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71adaf7cf479bf944be9401d81f4ccf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!81 &141023268
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 141023266}
-  m_Enabled: 1
 --- !u!20 &141023269
 Camera:
   m_ObjectHideFlags: 0
@@ -781,6 +763,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74712d0489e7f3d4fafed784053aaaff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  wpCam: {fileID: 987484297}
+  mag: 0
+  dur: 0
 --- !u!212 &545972958
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -868,7 +853,6 @@ GameObject:
   m_Component:
   - component: {fileID: 624014171}
   - component: {fileID: 624014173}
-  - component: {fileID: 624014172}
   - component: {fileID: 624014174}
   m_Layer: 5
   m_Name: Sub-Cams Status Panel
@@ -899,36 +883,6 @@ RectTransform:
   m_AnchoredPosition: {x: 512, y: 0}
   m_SizeDelta: {x: -1024, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &624014172
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 624014170}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!222 &624014173
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1050,7 +1004,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 318.5, y: -34.3}
+  m_AnchoredPosition: {x: 318.5, y: -34.299988}
   m_SizeDelta: {x: 600, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &781073280
@@ -1297,6 +1251,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74712d0489e7f3d4fafed784053aaaff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  wpCam: {fileID: 987484297}
+  mag: 0
+  dur: 0
 --- !u!212 &976188319
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1372,7 +1329,6 @@ GameObject:
   m_Component:
   - component: {fileID: 987484298}
   - component: {fileID: 987484297}
-  - component: {fileID: 987484296}
   - component: {fileID: 987484299}
   m_Layer: 0
   m_Name: Waypoint Cam
@@ -1381,14 +1337,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &987484296
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 987484295}
-  m_Enabled: 1
 --- !u!20 &987484297
 Camera:
   m_ObjectHideFlags: 0
@@ -1564,6 +1512,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74712d0489e7f3d4fafed784053aaaff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  wpCam: {fileID: 987484297}
+  mag: 0
+  dur: 0
 --- !u!212 &1076982046
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1639,7 +1590,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1092641605}
   - component: {fileID: 1092641604}
-  - component: {fileID: 1092641603}
   m_Layer: 0
   m_Name: Background Cam
   m_TagString: Untagged
@@ -1647,14 +1597,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &1092641603
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1092641602}
-  m_Enabled: 1
 --- !u!20 &1092641604
 Camera:
   m_ObjectHideFlags: 0
@@ -1769,6 +1711,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74712d0489e7f3d4fafed784053aaaff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  wpCam: {fileID: 987484297}
+  mag: 0
+  dur: 0
 --- !u!212 &1146441510
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1891,6 +1836,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74712d0489e7f3d4fafed784053aaaff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  wpCam: {fileID: 987484297}
+  mag: 0
+  dur: 0
 --- !u!212 &1495363880
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1990,7 +1938,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 318.3, y: -83.9}
+  m_AnchoredPosition: {x: 318.3, y: -83.899994}
   m_SizeDelta: {x: 600, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1526370823
@@ -2092,6 +2040,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74712d0489e7f3d4fafed784053aaaff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  wpCam: {fileID: 987484297}
+  mag: 0
+  dur: 0
 --- !u!212 &1620649640
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2351,7 +2302,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 298, y: 18.5}
+  m_AnchoredPosition: {x: 279, y: 18.5}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1845509865
