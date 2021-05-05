@@ -2,20 +2,20 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
-public class HeroBehavior : MonoBehaviour {
-    
+public class HeroBehavior : MonoBehaviour
+{
+    public Camera heroCam;
     public EggSpawnSystem mEggSystem = null;
     public EnemyBehavior touchedChaser = null;
-    private const float kHeroRotateSpeed = 90f/2f; // 90-degrees in 2 seconds
+    private const float kHeroRotateSpeed = 90f / 2f; // 90-degrees in 2 seconds
     private const float kHeroSpeed = 20f;  // 20-units in a second
     private float mHeroSpeed = kHeroSpeed;
-    
     private bool mMouseDrive = true;
     //  Hero state
     private int mHeroTouchedEnemy = 0;
 
     public void TouchedEnemy()
-    { 
+    {
         mHeroTouchedEnemy++;
     }
 
@@ -32,24 +32,17 @@ public class HeroBehavior : MonoBehaviour {
         Debug.Assert(mEggSystem != null);
         EggBehavior.InitializeEggSystem(mEggSystem);
     }
-
-    void Start ()
-    { 
-    }
-	
-	// Update is called once per frame
-	void Update () {
+    void Update()
+    {
         UpdateMotion();
         ProcessEggSpwan();
     }
-
-    private int EggsOnScreen() { return mEggSystem.GetEggCount();  }
-
+    private int EggsOnScreen() { return mEggSystem.GetEggCount(); }
     private void UpdateMotion()
     {
         if (Input.GetKeyDown(KeyCode.M))
             mMouseDrive = !mMouseDrive;
-            
+
         // Only support rotation
         transform.Rotate(Vector3.forward, -1f * Input.GetAxis("Horizontal") *
                                     (kHeroRotateSpeed * Time.smoothDeltaTime));
@@ -58,7 +51,8 @@ public class HeroBehavior : MonoBehaviour {
             Vector3 p = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             p.z = 0f;
             transform.position = p;
-        } else
+        }
+        else
         {
             mHeroSpeed += Input.GetAxis("Vertical");
             transform.position += transform.up * (mHeroSpeed * Time.smoothDeltaTime);
@@ -73,8 +67,4 @@ public class HeroBehavior : MonoBehaviour {
                 mEggSystem.SpawnAnEgg(transform.position, transform.up);
         }
     }
-
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //}
 }

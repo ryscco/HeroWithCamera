@@ -20,14 +20,17 @@ public class EnemyBehavior : MonoBehaviour
     public EnemyState myState = EnemyState.Patrol; // Current enemy state
     private float stateTimer; // For keeping track of a state's starting time
     private GameObject currentTarget; // For chasing the hero
+
     // Variables to assist with lerp motion upon collision from an egg:
     public bool isPushed = false;
     private Vector3 startingPosition;
     private Vector3 restingPosition;
+
     // Variables to help with scaling the object's size:
     private Vector3 originalScale;
     private float currentScaleRatio = 1;
     private float maximumEnlargedRatio = 2;
+
     // All instances of Enemy shares this one WayPoint and EnemySystem
     static private WayPointSystem sWayPoints = null;
     static private EnemySpawnSystem sEnemySystem = null;
@@ -35,6 +38,7 @@ public class EnemyBehavior : MonoBehaviour
     private const float kSpeed = 5f;
     private int mWayPointIndex = 0;
     private const float kTurnRate = 0.03f / 60f;
+
     // Use this for initialization
     void Start()
     {

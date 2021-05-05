@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class EggSpawnSystem : MonoBehaviour
 {
+    public Camera heroCam;
     // UI Support
     public RectTransform mCoolDownTimeBar = null;
 
@@ -21,6 +22,7 @@ public class EggSpawnSystem : MonoBehaviour
 
     void Start()
     {
+        heroCam = GameObject.Find("Hero Cam").GetComponent<Camera>();
         Debug.Assert(mCoolDownTimeBar != null);
         mEggSample = Resources.Load<GameObject>("Prefabs/Egg") as GameObject;
 
@@ -52,6 +54,7 @@ public class EggSpawnSystem : MonoBehaviour
         e.transform.up = dir;
         IncEggCount();
         mSpawnEggAt = Time.realtimeSinceStartup;
+        heroCam.GetComponent<HeroCam>().shakeHeroCam();
     }
     #endregion
 

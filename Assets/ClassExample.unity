@@ -153,6 +153,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 040030de3617690479d78296c2f7fdf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  theGameManager: {fileID: 358654686}
+  selfCam: {fileID: 41294127}
 --- !u!20 &41294127
 Camera:
   m_ObjectHideFlags: 0
@@ -424,6 +426,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71adaf7cf479bf944be9401d81f4ccf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selfCam: {fileID: 141023269}
+  mainCam: {fileID: 499503346}
+  theHero: {fileID: 1660550317}
 --- !u!20 &141023269
 Camera:
   m_ObjectHideFlags: 0
@@ -2206,6 +2211,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c1172f88695e8c4d8bab3c268767293, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  heroCam: {fileID: 141023269}
   mEggSystem: {fileID: 1660550323}
   touchedChaser: {fileID: 0}
 --- !u!61 &1660550321
@@ -2267,6 +2273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9f5d974e1dadc14d86e044c7ac0ceba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  heroCam: {fileID: 0}
   mCoolDownTimeBar: {fileID: 1845509864}
 --- !u!1 &1845509863
 GameObject:

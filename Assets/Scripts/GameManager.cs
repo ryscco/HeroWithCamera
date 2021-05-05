@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     private EnemySpawnSystem mEnemySystem = null;
     private CameraSupport mMainCamera;
     public Camera mWaypointCamera, mEnemyCamera, mHeroCamera;
+    GameObject[] enemies;
     void Start()
     {
         GameManager.sTheGlobalBehavior = this;  // Singleton pattern
@@ -31,6 +32,7 @@ public class GameManager : MonoBehaviour
         // Make sure all enemy sees the same EnemySystem and WayPointSystem
         EnemyBehavior.InitializeEnemySystem(mEnemySystem, mWayPoints);
         mEnemySystem.GenerateEnemy();  // Can only create enemies when WayPoint is initialized in EnemyBehavior
+        enemies = GameObject.FindGameObjectsWithTag("enemy");
     }
     void Update()
     {
@@ -43,6 +45,12 @@ public class GameManager : MonoBehaviour
             toggleCamera(mWaypointCamera);
             toggleCamera(mEnemyCamera);
             toggleCamera(mHeroCamera);
+        }
+        // Check if an enemy is chasing, if so, initiate Enemy Camera
+        GameObject e = checkForChase();
+        if (e != null) {
+            mEnemyCamera.gameObject.SetActive(true);
+            mEnemyCamera.GetComponent<EnemyCamera>().enemyChase(e);
         }
     }
     #region Bound Support
@@ -57,5 +65,14 @@ public class GameManager : MonoBehaviour
     void toggleCamera(Camera cam) // Toggle culling mask to "inactivate" a camera's rendering
     {
         cam.gameObject.SetActive(!(cam.gameObject.activeSelf));
+    }
+    public GameObject checkForChase() {
+        enemies = GameObject.FindGameObjectsWithTag("enemy");
+        foreach(GameObject e in enemies) {
+            if (e.GetComponent<EnemyBehavior>().myState == EnemyBehavior.EnemyState.Chase) {
+                return e;
+            }
+        }
+        return null;
     }
 }
