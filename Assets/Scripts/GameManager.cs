@@ -38,7 +38,13 @@ public class GameManager : MonoBehaviour
     {
         EchoGameState(); // always do this
         if (Input.GetKey(KeyCode.Q))
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
             Application.Quit();
+#endif
+        }
 
         if (Input.GetKeyDown(KeyCode.P))
         {
